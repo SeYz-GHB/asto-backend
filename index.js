@@ -13,12 +13,17 @@ import userProfileRoutes from "./routes/userProfileRoutes.js";
 
 const app = express();
 
+// ✅ Define CORS only ONCE with both allowed origins
 app.use(
   cors({
-    origin: "http://localhost:5173",
+    origin: [
+      "http://localhost:5173",      // local dev
+      "https://www.asto-gear.com", // production frontend
+    ],
     credentials: true,
   })
 );
+
 app.use(express.json());
 app.use(cookieParser());
 
@@ -38,7 +43,9 @@ const PORT = process.env.PORT || 5000;
     await db.sequelize.authenticate();
     console.log("✅ MySQL connection via Sequelize established");
     await db.sequelize.sync();
-    app.listen(PORT, () => console.log(`🚀 Server running at http://localhost:${PORT}`));
+    app.listen(PORT, () =>
+      console.log(`🚀 Server running at http://localhost:${PORT}`)
+    );
   } catch (err) {
     console.error("❌ Failed to start server:", err);
     process.exit(1);
